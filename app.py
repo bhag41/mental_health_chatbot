@@ -67,3 +67,39 @@ save_to_jsonl(train_dataset[:-5], training_data_path)
 
 validation_data_path = '/data/validation.jsonl'
 save_to_jsonl(train_dataset[-5:], validation_data_path)
+
+# Load the training and validation files
+training_data = open(training_data_path, "rb")
+validation_data = open(validation_data_path, "rb")
+
+#  Add OpenAI api_key
+api_key = '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'
+client = OpenAI(api_key=api_key)
+
+# Upload the training and validation files
+training_response = client.files.create(file=training_data, purpose="fine-tune")
+training_file_id = training_response.id
+
+validation_response = client.files.create(file=validation_data, purpose="fine-tune")
+validation_file_id = validation_response.id
+
+print("Training file id:", training_file_id)
+print("Validation file id:", validation_file_id)
+
+# Create a fine-tuning job
+response = client.fine_tuning.jobs.create(
+    training_file=training_file_id,
+    model="gpt-3.5-turbo",
+    suffix="my-test-model",
+    validation_file=validation_file_id
+)
+
+job_id = response.id
+
+print(response)
+
+# Retrieve the job status
+job_id = response.id
+
+job_status = client.fine_tuning.jobs.retrieve(job_id)
+print(job_status)
