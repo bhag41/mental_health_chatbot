@@ -5,7 +5,12 @@ import json as json
 from enum import Enum
 import random as random
 from openai import OpenAI
+from dotenv import load_dotenv
 
+load_dotenv()
+#  Add OpenAI api_key
+api_key = os.getenv('OPENAI_API_KEY')
+if not api_key: raise ValueError("API key not found. Please set the OPENAI_API_KEY environment variable.")
 
 #  Define the RoleType Enum here
 class RoleType(Enum):
@@ -72,8 +77,7 @@ save_to_jsonl(train_dataset[-5:], validation_data_path)
 training_data = open(training_data_path, "rb")
 validation_data = open(validation_data_path, "rb")
 
-#  Add OpenAI api_key
-api_key = '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'
+# Initialize the OpenAI client
 client = OpenAI(api_key=api_key)
 
 # Upload the training and validation files
