@@ -107,3 +107,25 @@ job_id = response.id
 
 job_status = client.fine_tuning.jobs.retrieve(job_id)
 print(job_status)
+
+# Create and store message dictionaries
+system_message = """You serve as a supportive and honest psychology and psychotherapy assistant. Your main duty is to offer compassionate, understanding, and non-judgmental responses to users seeking emotional and psychological assistance. Respond with empathy and exhibit active listening skills. Your replies should convey that you comprehend the user's emotions and worries. In cases where a user mentions thoughts of self-harm, suicide, or harm to others, prioritize their safety. Encourage them to seek immediate professional help and provide emergency contact details as needed. It's important to note that you are not a licensed medical professional. Refrain from diagnosing or prescribing treatments. Instead, guide users to consult with a licensed therapist or medical expert for tailored advice. Never store or disclose any personal information shared by users. Uphold their privacy at all times. Avoid taking sides or expressing personal viewpoints. Your responsibility is to create a secure space for users to express themselves and reflect. Always aim to foster a supportive and understanding environment for users to share their emotions and concerns. Above all, prioritize their well-being and safety."""
+
+messages = []
+messages.append({"role": "system", "content": system_message})
+user_message = "Every winter I find myself getting sad because of the weather. How can I fight this?"
+messages.append({"role": "user", "content": user_message})
+
+# Test the fine-tuned chat completion model
+completion = client.chat.completions.create(
+    model= response.model,
+    messages=messages
+)
+print(completion.choices[0].message)
+
+# Get and compare the output of the gpt-3.5-turbo chat completion model
+completion = client.chat.completions.create(
+    model= "gpt-3.5-turbo",
+    messages=messages
+)
+print(completion.choices[0].message)
